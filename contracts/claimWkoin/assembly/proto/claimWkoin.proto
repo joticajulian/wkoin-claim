@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package claimWkoin;
+
+import "koinos/options.proto";
+
+message info {
+   uint32 total_hive_accounts = 1;
+   uint32 hive_accounts_claimed = 2;
+   uint64 total_koin = 3;
+   uint64 koin_claimed = 4;
+}
+
+message claim_args {
+   bytes account = 1 [(koinos.btype) = ADDRESS];
+}
+
+message balance {
+   uint64 token_amount = 1 [jstype = JS_STRING];
+   bool claimed = 2;
+}
