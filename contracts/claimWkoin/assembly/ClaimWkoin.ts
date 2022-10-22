@@ -1,10 +1,11 @@
-import { System, Token, authority, Storage, Base58 } from "@koinos/sdk-as";
+import { System, Token, Storage, Base58 } from "@koinos/sdk-as";
 import { Ownable } from "./Ownable";
 import { claimWkoin } from "./proto/claimWkoin";
 import { common } from "./proto/common";
 
 const BALANCES_SPACE_ID = 0;
 const INFO_SPACE_ID = 1;
+const KOIN_CONTRACT_ID = Base58.decode("19JntSm8pSNETT9aHTwAUHC5RMoaSmgZPJ");
 
 export class ClaimWkoin extends Ownable {
   callArgs: System.getArgumentsReturn | null;
@@ -19,7 +20,7 @@ export class ClaimWkoin extends Ownable {
       BALANCES_SPACE_ID,
       claimWkoin.balance.decode,
       claimWkoin.balance.encode,
-      null
+      () => new claimWkoin.balance(0, false)
     );
     this.info = new Storage.Obj(
       this.contractId,
@@ -31,7 +32,7 @@ export class ClaimWkoin extends Ownable {
   }
 
   /**
-   * Set initial values for general info
+   * Set initial values for general info. Only the contract can perform this operation.
    * @external
    */
   set_info(info: claimWkoin.info): common.boole {
@@ -50,29 +51,52 @@ export class ClaimWkoin extends Ownable {
   }
 
   /**
+   * Create new balances in the accounts or update them.
+   * Only the contract can perform this operation.
+   * @external
+   */
+  set_balances(args: claimWkoin.list_balances): common.boole {
+    System.require(args.accounts.length == args.balances.length, "accounts and balances length mismatch");
+    System.require(this.only_owner(), "owner has not authorized to update the balances");
+    for (let i = 0; i < args.accounts.length; i +=1 ) {
+      this.balances.put(args.accounts[i], args.balances[i]);
+    }
+    return new common.boole(true);
+  }
+
+  /**
+   * Get balance info from an account
+   * @external
+   * @readonly
+   */
+  get_balance(args: claimWkoin.account): claimWkoin.balance {
+    return this.balances.get(args.account!)!;
+  }
+
+  /**
    * Claim koins
    * @external
    */
-  claim(args: claimWkoin.claim_args): common.boole {
+  claim(args: claimWkoin.account): common.boole {
     const payee = System.getTransactionField("header.payee")!.bytes_value!;
-    const balance = this.balances.get(payee);
-    System.require(balance != null, "no KOIN claim with that address exists");
-    System.require(!balance!.claimed, "KOIN has already been claimed for this address");
+    const balance = this.balances.get(payee)!;
+    System.require(balance.token_amount > 0, "no KOIN claim with that address exists");
+    System.require(!balance.claimed, "KOIN has already been claimed for this address");
     
-    const koin = new Token(Base58.decode(""));
+    const koin = new Token(KOIN_CONTRACT_ID);
     const result = koin.transfer(
       this.contractId,
       args.account!,
-      balance!.token_amount
+      balance.token_amount
     );
     System.require(result, "could not transfer koin");
 
-    balance!.claimed = true;
-    this.balances.put(payee, balance!);
+    balance.claimed = true;
+    this.balances.put(payee, balance);
 
     const info = this.info.get()!;
     info.hive_accounts_claimed += 1;
-    info.koin_claimed += balance!.token_amount;
+    info.koin_claimed += balance.token_amount;
     this.info.put(info);
 
     return new common.boole(true);
@@ -82,7 +106,7 @@ export class ClaimWkoin extends Ownable {
    * authorize function
    * @external
    */
-  authorize(args: authority.authorize_arguments): common.boole {
+  authorize(): common.boole {
     return this.only_owner();
   }
 }

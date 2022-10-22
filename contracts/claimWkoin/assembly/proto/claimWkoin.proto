@@ -11,11 +11,16 @@ message info {
    uint64 koin_claimed = 4;
 }
 
-message claim_args {
+message account {
    bytes account = 1 [(koinos.btype) = ADDRESS];
 }
 
 message balance {
-   uint64 token_amount = 1 [jstype = JS_STRING];
-   bool claimed = 2;
+   uint64 token_amount = 2 [jstype = JS_STRING];
+   bool claimed = 3;
+}
+
+message list_balances {
+   repeated bytes accounts = 1 [(koinos.btype) = ADDRESS];
+   repeated balance balances = 2;
 }

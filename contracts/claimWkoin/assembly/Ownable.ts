@@ -14,11 +14,11 @@ export class Ownable {
   constructor() {
     this.contractId = System.getContractId();
     this.owner = new Storage.Obj(
-        this.contractId,
-        OWNER_SPACE_ID,
-        ownable.owner.decode,
-        ownable.owner.encode,
-        null
+      this.contractId,
+      OWNER_SPACE_ID,
+      ownable.owner.decode,
+      ownable.owner.encode,
+      null
     );
   }
 

@@ -26,14 +26,14 @@
     "yaml": "^2.1.3"
   },
   "scripts": {
-    "asbuild:debug:claimWkoin": "asc contracts/claimWkoin/build/index.ts --config contracts/claimWkoin/asconfig.json --use abort= --target debug",
-    "asbuild:release:claimWkoin": "asc contracts/claimWkoin/build/index.ts --config contracts/claimWkoin/asconfig.json --use abort= --target release",
-    "build:claimWkoin": "yarn precompile:claimWkoin && yarn asbuild:release:claimWkoin",
-    "precompile:claimWkoin": "koinos-precompiler-as contracts/claimWkoin",
-    "test:claimWkoin": "asp --verbose --config contracts/claimWkoin/as-pect.config.js",
-    "deploy:claimWkoin": "ts-node contracts/claimWkoin/scripts/deployment.ts",
-    "info:claimWkoin": "node getSha256.js claimWkoin",
-    "lint": "eslint --max-warnings 0 --ext ts \"*/assembly/**/*.ts\"",
+    "asbuild:debug": "asc contracts/claimWkoin/build/index.ts --config contracts/claimWkoin/asconfig.json --use abort= --target debug",
+    "asbuild:release": "asc contracts/claimWkoin/build/index.ts --config contracts/claimWkoin/asconfig.json --use abort= --target release",
+    "build": "yarn precompile:claimWkoin && yarn asbuild:release:claimWkoin",
+    "precompile": "koinos-precompiler-as contracts/claimWkoin",
+    "test": "asp --verbose --config contracts/claimWkoin/as-pect.config.js",
+    "deploy": "ts-node contracts/claimWkoin/scripts/deployment.ts",
+    "info": "node getSha256.js claimWkoin",
+    "lint": "eslint --max-warnings 0 --ext ts \"**/assembly/**/*.ts\"",
     "postinstall": "patch-package"
   },
   "config": {
