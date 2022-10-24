@@ -27,7 +27,7 @@ export class ClaimWkoin extends Ownable {
       INFO_SPACE_ID,
       claimWkoin.info.decode,
       claimWkoin.info.encode,
-      () => new claimWkoin.info(0, 0, 0, 0),
+      () => new claimWkoin.info(0, 0, 0, 0)
     );
   }
 
@@ -36,7 +36,10 @@ export class ClaimWkoin extends Ownable {
    * @external
    */
   set_info(info: claimWkoin.info): common.boole {
-    System.require(this.only_owner(), "owner has not authorized to update info");
+    System.require(
+      this.only_owner(),
+      "owner has not authorized to update info"
+    );
     this.info.put(info);
     System.event("set_info", this.callArgs!.args, []);
     return new common.boole(true);
@@ -57,9 +60,15 @@ export class ClaimWkoin extends Ownable {
    * @external
    */
   set_balances(args: claimWkoin.list_balances): common.boole {
-    System.require(args.accounts.length == args.balances.length, "accounts and balances length mismatch");
-    System.require(this.only_owner(), "owner has not authorized to update the balances");
-    for (let i = 0; i < args.accounts.length; i +=1 ) {
+    System.require(
+      args.accounts.length == args.balances.length,
+      "accounts and balances length mismatch"
+    );
+    System.require(
+      this.only_owner(),
+      "owner has not authorized to update the balances"
+    );
+    for (let i = 0; i < args.accounts.length; i += 1) {
       this.balances.put(args.accounts[i], args.balances[i]);
     }
     System.event("set_balances", this.callArgs!.args, args.accounts);
@@ -82,9 +91,15 @@ export class ClaimWkoin extends Ownable {
   claim(args: claimWkoin.account): common.boole {
     const payee = System.getTransactionField("header.payee")!.bytes_value!;
     const balance = this.balances.get(payee)!;
-    System.require(balance.token_amount > 0, "no KOIN claim with that address exists");
-    System.require(!balance.claimed, "KOIN has already been claimed for this address");
-    
+    System.require(
+      balance.token_amount > 0,
+      "no KOIN claim with that address exists"
+    );
+    System.require(
+      !balance.claimed,
+      "KOIN has already been claimed for this address"
+    );
+
     const koin = new Token(KOIN_CONTRACT_ID);
     const result = koin.transfer(
       this.contractId,

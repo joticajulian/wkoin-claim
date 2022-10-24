@@ -21,11 +21,14 @@ async function main() {
     provider,
   }).functions;
 
-  const { receipt, transaction } = await contract.set_info({
-    total_hive_accounts: 45,
-    hive_accounts_claimed: 0,
-    total_koin: "995952791283",
-    koin_claimed: "0",
+  const { receipt, transaction } = await contract.set_balances({
+    accounts: ["1K6oESWG87m3cB3M2WVkzxdTr38po8WToN"],
+    balances: [
+      {
+        token_amount: "123",
+        claimed: false,
+      },
+    ],
   });
   console.log("Transaction submitted. Receipt: ");
   console.log(receipt);

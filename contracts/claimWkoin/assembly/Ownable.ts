@@ -51,7 +51,10 @@ export class Ownable {
    * @external
    */
   set_owner(newOwner: ownable.owner): common.boole {
-    System.require(this.only_owner(), "owner has not authorized to change the owner");
+    System.require(
+      this.only_owner(),
+      "owner has not authorized to change the owner"
+    );
     this.owner.put(newOwner);
     System.event("set_owner", this.callArgs!.args, [newOwner.account!]);
     return new common.boole(true);

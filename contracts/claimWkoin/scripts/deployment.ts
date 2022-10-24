@@ -34,11 +34,14 @@ async function main() {
     },
   });
 
-  const { operation: takeOwnership } = await contract.functions.set_owner({
-    account: accountWithFunds.address
-  }, {
-    onlyOperation: true,
-  });
+  const { operation: takeOwnership } = await contract.functions.set_owner(
+    {
+      account: accountWithFunds.address,
+    },
+    {
+      onlyOperation: true,
+    }
+  );
 
   const { receipt, transaction } = await contract.deploy({
     abi: JSON.stringify(abi),
