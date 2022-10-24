@@ -22,7 +22,7 @@ export class Ownable {
     );
   }
 
-  only_owner(): common.boole {
+  only_owner(): boolean {
     const owner = this.owner.get();
     if (!owner) {
       /**
@@ -30,7 +30,7 @@ export class Ownable {
        * This means that this function must be called right
        * after the contract is uploaded
        */
-      return new common.boole(true);
+      return true;
     }
 
     if (
@@ -40,10 +40,10 @@ export class Ownable {
         this.callArgs!.args
       )
     ) {
-      return new common.boole(false);
+      return false;
     }
 
-    return new common.boole(true);
+    return true;
   }
 
   /**
@@ -53,6 +53,7 @@ export class Ownable {
   set_owner(newOwner: ownable.owner): common.boole {
     System.require(this.only_owner(), "owner has not authorized to change the owner");
     this.owner.put(newOwner);
+    System.event("set_owner", this.callArgs!.args, [newOwner.account!]);
     return new common.boole(true);
   }
 

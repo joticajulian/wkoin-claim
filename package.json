@@ -1,9 +1,9 @@
 {
-  "name": "claimWkoin",
+  "name": "claim-wkoin",
   "version": "0.1.0",
   "license": "MIT",
   "dependencies": {
-    "koilib": "^5.1.1",
+    "koilib": "^5.2.2",
     "koinos-precompiler-as": "^0.1.7",
     "patch-package": "^6.4.7",
     "postinstall-postinstall": "^2.1.0"
@@ -28,10 +28,11 @@
   "scripts": {
     "asbuild:debug": "asc contracts/claimWkoin/build/index.ts --config contracts/claimWkoin/asconfig.json --use abort= --target debug",
     "asbuild:release": "asc contracts/claimWkoin/build/index.ts --config contracts/claimWkoin/asconfig.json --use abort= --target release",
-    "build": "yarn precompile:claimWkoin && yarn asbuild:release:claimWkoin",
+    "build": "yarn precompile && yarn asbuild:release",
     "precompile": "koinos-precompiler-as contracts/claimWkoin",
     "test": "asp --verbose --config contracts/claimWkoin/as-pect.config.js",
     "deploy": "ts-node contracts/claimWkoin/scripts/deployment.ts",
+    "setInfo": "ts-node contracts/claimWkoin/scripts/setInfo.ts",
     "info": "node getSha256.js claimWkoin",
     "lint": "eslint --max-warnings 0 --ext ts \"**/assembly/**/*.ts\"",
     "postinstall": "patch-package"

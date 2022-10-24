@@ -38,6 +38,7 @@ export class ClaimWkoin extends Ownable {
   set_info(info: claimWkoin.info): common.boole {
     System.require(this.only_owner(), "owner has not authorized to update info");
     this.info.put(info);
+    System.event("set_info", this.callArgs!.args, []);
     return new common.boole(true);
   }
 
@@ -61,6 +62,7 @@ export class ClaimWkoin extends Ownable {
     for (let i = 0; i < args.accounts.length; i +=1 ) {
       this.balances.put(args.accounts[i], args.balances[i]);
     }
+    System.event("set_balances", this.callArgs!.args, args.accounts);
     return new common.boole(true);
   }
 
@@ -99,6 +101,7 @@ export class ClaimWkoin extends Ownable {
     info.koin_claimed += balance.token_amount;
     this.info.put(info);
 
+    System.event("claim", this.callArgs!.args, [args.account!]);
     return new common.boole(true);
   }
 
@@ -107,6 +110,10 @@ export class ClaimWkoin extends Ownable {
    * @external
    */
   authorize(): common.boole {
-    return this.only_owner();
+    const authorized = this.only_owner();
+    if (authorized) {
+      System.event("authorize", this.callArgs!.args, []);
+    }
+    return new common.boole(authorized);
   }
 }

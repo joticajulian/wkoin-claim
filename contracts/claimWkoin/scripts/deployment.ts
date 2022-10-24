@@ -3,7 +3,7 @@ import path from "path";
 import { Signer, Contract, Provider } from "koilib";
 import { TransactionJson } from "koilib/lib/interface";
 import * as dotenv from "dotenv";
-import tokenAbi from "../build/claimwkoin-abi.json";
+import abi from "../build/claimwkoin-abi.json";
 
 dotenv.config();
 
@@ -19,7 +19,9 @@ async function main() {
   contractAccount.provider = provider;
 
   const contract = new Contract({
+    id: contractAccount.address,
     signer: contractAccount,
+    abi,
     provider,
     bytecode: fs.readFileSync(
       path.join(__dirname, "../build/release/contract.wasm")
@@ -32,8 +34,18 @@ async function main() {
     },
   });
 
+  const { operation: takeOwnership } = await contract.functions.set_owner({
+    account: accountWithFunds.address
+  }, {
+    onlyOperation: true,
+  });
+
   const { receipt, transaction } = await contract.deploy({
-    abi: JSON.stringify(tokenAbi),
+    abi: JSON.stringify(abi),
+    authorizesCallContract: true,
+    authorizesTransactionApplication: true,
+    authorizesUploadContract: true,
+    nextOperations: [takeOwnership],
   });
   console.log("Transaction submitted. Receipt: ");
   console.log(receipt);

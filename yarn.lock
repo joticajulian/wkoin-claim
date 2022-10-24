@@ -1912,10 +1912,10 @@ klaw@^3.0.0:
   dependencies:
     graceful-fs "^4.1.9"
 
-koilib@^5.1.1:
-  version "5.1.1"
-  resolved "https://registry.yarnpkg.com/koilib/-/koilib-5.1.1.tgz#b5ef5709e1dd5909c89674d280cf2072a09efd9b"
-  integrity sha512-0mIf8Y7syHA5TN4BAG3Cco9Y8nGOI709n9gTc9S/LZogtUvI6CiAPKFcupItoiO4ZAHVt89HdVSJ+F8V9PC9YQ==
+koilib@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/koilib/-/koilib-5.2.2.tgz#87d76acdaf5b39d40374f832ddec2559962cdb75"
+  integrity sha512-fxT98KDH3wELYlZ5wa63lGdnIRktXVW1jq4xdfhSlDwZLbnczSO0t8bOaR4jCaQWK978tGy4PdvLc0PmXojACQ==
   dependencies:
     "@noble/hashes" "^1.1.2"
     "@noble/secp256k1" "^1.6.3"
