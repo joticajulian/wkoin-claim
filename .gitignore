@@ -5,3 +5,4 @@ build
 **/assembly/__tests__/*.wat
 .env
 snapshot.json
+snapshotSecrets.json
