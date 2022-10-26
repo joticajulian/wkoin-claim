@@ -1,6 +1,7 @@
 import { Signer, Contract, Provider } from "koilib";
 import * as dotenv from "dotenv";
 import abi from "../build/claimwkoin-abi.json";
+import snapshotSecrets from "../../../snapshotSecrets.json";
 
 dotenv.config();
 
@@ -22,13 +23,11 @@ async function main() {
   }).functions;
 
   const { receipt, transaction } = await contract.set_balances({
-    accounts: ["1K6oESWG87m3cB3M2WVkzxdTr38po8WToN"],
-    balances: [
-      {
-        token_amount: "123",
-        claimed: false,
-      },
-    ],
+    accounts: snapshotSecrets.map(s => s.account),
+    balances: snapshotSecrets.map(s => ({
+      token_amount: s.balance,
+      claimed: false,
+    })),
   });
   console.log("Transaction submitted. Receipt: ");
   console.log(receipt);
