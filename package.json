@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "license": "MIT",
   "dependencies": {
+    "@hivechain/steem-js": "^0.7.12",
+    "@hiveio/dhive": "^1.2.4",
     "axios": "^1.1.3",
     "koilib": "^5.2.2",
     "koinos-precompiler-as": "^0.1.7",
