@@ -1,14 +1,165 @@
 <html>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <head>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div id="app">
-      
+      <h1>Claim KOIN</h1>
+      <p>
+        Move your WKOINs from Hive to the native KOINs in Koinos blockchain.
+      </p>
+      <p>
+        Please note that a snapshot of the WKOIN balances will be taken on Oct
+        31th. After this date refrain from trading WKOIN in Hive Engine as they
+        will not have no value.
+      </p>
+      <div class="form">
+        <div class="text">Insert the secret received in your Hive account</div>
+        <input type="text" v-model="secret" />
+        <div
+          class="result"
+          v-if="result1"
+          :class="{
+          success: success1,
+          fail: !success1
+        }"
+        >
+          {{result1}}
+        </div>
+      </div>
+      <div class="form">
+        <button @click="connectKondor()">Connect Kondor</button>
+        <div
+          class="result"
+          v-if="result2"
+          :class="{
+          success: success2,
+          fail: !success2
+        }"
+        >
+          {{result2}}
+        </div>
+      </div>
+      <div class="form">
+        <button @click="claimKoins()">Claim Koins</button>
+        <div
+          class="result"
+          v-if="result3"
+          :class="{
+          success: success3,
+          fail: !success3
+        }"
+        >
+          {{result2}}
+        </div>
+      </div>
+      <div>{{message}}</div>
     </div>
     <script src="js/kondor.js"></script>
     <script src="js/koinos.js"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script>
+      const { createApp } = Vue;
+      let defaultKoinosProvider = "https://api.koinosblocks.com";
+
+      createApp({
+        data() {
+          return {
+            secret: "",
+            secretAddress: "",
+            koinAddress: "",
+            result1: "",
+            result2: "",
+            result3: "",
+            message: "",
+            success1: true,
+            success2: true,
+            success3: true,
+            abi: {},
+          };
+        },
+
+        watch: {
+          secret: function (val) {
+            this.consultClaim();
+          },
+        },
+
+        mounted() {
+          setTimeout(this.consultGeneralInfo, 1000);
+          fetch("claimwkoin-abi.json")
+            .then((res) => res.json())
+            .then((data) => {
+              this.abi = data;
+            });
+        },
+
+        methods: {
+          getClaimContract: function (option) {
+            // const provider = kondor.provider;
+            const provider = new Provider([defaultKoinosProvider]);
+            const signer = kondor.getSigner(this.koinAddress);
+            return new Contract({
+              id: "1CaZhqZN9yqXZZseJzcG1aaYT5GN7PBqmH",
+              abi: this.abi,
+              provider,
+              signer,
+            });
+          },
+
+          consultGeneralInfo: async function () {
+            try {
+              const claimContract = this.getClaimContract().functions;
+              const { result: info } = await claimContract.get_info({});
+              console.log(info);
+            } catch (error) {
+              this.message = `General info error: ${error.message}`;
+            }
+          },
+
+          consultClaim: async function () {
+            try {
+              this.result1 = "";
+              const secretAddress = Signer.fromWif(this.secret).address;
+              const claimContract = this.getClaimContract().functions;
+              const { result: claim } = await claimContract.get_balance({
+                account: secretAddress,
+              });
+
+              if (!claim) {
+                throw new Error(`No claim data found for this secret`);
+              }
+
+              this.result1 = `${utils.formatUnits(
+                claim.token_amount,
+                8
+              )} Koins ${
+                claim.claimed ? "already claimed" : "ready to be claimed"
+              }`;
+              this.success1 = true;
+            } catch (error) {
+              this.result1 = error.message;
+              this.success1 = false;
+            }
+          },
+
+          connectKondor: async function () {
+            try {
+              this.result2 = "";
+              this.koinAddress = "";
+              const accounts = await kondor.getAccounts();
+              if (accounts.length === 0) throw new Error("No account selected");
+              this.koinAddress = accounts[0].address;
+              this.result2 = this.koinAddress;
+              this.success2 = true;
+            } catch (error) {
+              this.result2 = error.message;
+              this.success2 = false;
+            }
+          },
+        },
+      }).mount("#app");
+    </script>
   </body>
 </html>
