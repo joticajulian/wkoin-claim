@@ -2257,7 +2257,7 @@ klaw@^3.0.0:
   dependencies:
     graceful-fs "^4.1.9"
 
-koilib@^5.2.2:
+koilib@^5.2.0, koilib@^5.2.2:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/koilib/-/koilib-5.2.2.tgz#87d76acdaf5b39d40374f832ddec2559962cdb75"
   integrity sha512-fxT98KDH3wELYlZ5wa63lGdnIRktXVW1jq4xdfhSlDwZLbnczSO0t8bOaR4jCaQWK978tGy4PdvLc0PmXojACQ==
@@ -2282,6 +2282,13 @@ koinos-precompiler-as@^0.1.7:
     protobufjs "^7.0.0"
     protobufjs-cli "^1.0.0"
     ts-structure-parser "^0.0.19"
+
+kondor-js@^0.3.2:
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/kondor-js/-/kondor-js-0.3.2.tgz#aab2a263cdc624b41bcf36c207ea61a35a661bec"
+  integrity sha512-8mqMwv5Ce/0F+rS/bq7nSZmY9wntb+JLrkrDe4ZRIwzU7v65GX9AqlqqyL0sXqHic+lDnoSeVyOKhFROZ8mN/Q==
+  dependencies:
+    koilib "^5.2.0"
 
 levn@^0.4.1:
   version "0.4.1"
