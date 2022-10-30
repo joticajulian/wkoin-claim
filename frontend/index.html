@@ -29,7 +29,9 @@
         </div>
       </div>
       <div class="form">
-        <button @click="connectKondor()">Connect Kondor</button>
+        <div class="button">
+          <button @click="connectKondor()">Connect Kondor</button>
+        </div>
         <div
           class="result"
           v-if="result2"
@@ -42,7 +44,9 @@
         </div>
       </div>
       <div class="form">
-        <button @click="claimKoins()">Claim Koins</button>
+        <div class="button">
+          <button @click="claimKoins()">Claim Koins</button>
+        </div>
         <div
           class="result"
           v-if="result3"
@@ -51,7 +55,7 @@
           fail: !success3
         }"
         >
-          {{result2}}
+          {{result3}}
         </div>
       </div>
       <div>{{message}}</div>
@@ -61,6 +65,7 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script>
       const { createApp } = Vue;
+      const wkoinClaimContractAddress = "1CaZhqZN9yqXZZseJzcG1aaYT5GN7PBqmH";
       let defaultKoinosProvider = "https://api.koinosblocks.com";
 
       createApp({
@@ -76,6 +81,9 @@
             success1: true,
             success2: true,
             success3: true,
+            loading1: false,
+            loading2: false,
+            loading3: false,
             abi: {},
           };
         },
@@ -101,7 +109,7 @@
             const provider = new Provider([defaultKoinosProvider]);
             const signer = kondor.getSigner(this.koinAddress);
             return new Contract({
-              id: "1CaZhqZN9yqXZZseJzcG1aaYT5GN7PBqmH",
+              id: wkoinClaimContractAddress,
               abi: this.abi,
               provider,
               signer,
@@ -156,6 +164,31 @@
             } catch (error) {
               this.result2 = error.message;
               this.success2 = false;
+            }
+          },
+
+          claimKoins: async function () {
+            try {
+              this.result3 = "";
+              const claimContract = this.getClaimContract().functions;
+              const { transaction, receipt } = await claimContract.claim(
+                {
+                  account: this.koinAddress,
+                },
+                {
+                  // TODO: update contract to not use the payee
+                  // payer: wkoinClaimContractAddress,
+                  // rcLimit: undefined,
+                  payee: this.koinAddress,
+                }
+              );
+              console.log(receipt);
+              const { blockNumber } = await transaction.wait();
+              this.result3 = `Congratulations! your koins were claimed in the account ${this.koinAddress}`;
+              this.success3 = true;
+            } catch (error) {
+              this.result3 = error.message;
+              this.success3 = false;
             }
           },
         },

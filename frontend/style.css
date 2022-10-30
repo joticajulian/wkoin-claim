@@ -1,0 +1,41 @@
+body {
+  font-family: sans-serif;
+  margin: 0;
+  background: linear-gradient(180deg, #aab7e4 0%, #e4e3cc 100%);
+}
+
+#app {
+  margin: 70px 30px 0px 30px;
+}
+
+h1 {
+  text-align: center;
+}
+
+input {
+  width: 100%;
+  border: none;
+  height: 35px;
+  padding: 8px;
+  margin: 3px 0px 8px 0px;
+}
+
+button {
+  background: #60779b;
+  color: white;
+  text-transform: uppercase;
+  padding: 12px 8px;
+  margin: 3px 0px 8px 0px;
+}
+
+.form {
+  margin: 40px 0px;
+}
+
+.button {
+  text-align: center;
+}
+
+.fail {
+  color: red;
+}
