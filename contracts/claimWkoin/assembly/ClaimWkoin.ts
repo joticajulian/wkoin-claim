@@ -1,4 +1,14 @@
-import { System, Token, Storage, Base58 } from "@koinos/sdk-as";
+import {
+  System,
+  Token,
+  Storage,
+  Base58,
+  authority,
+  Arrays,
+  value,
+  Protobuf,
+  protocol,
+} from "@koinos/sdk-as";
 import { Ownable } from "./Ownable";
 import { claimWkoin } from "./proto/claimWkoin";
 import { common } from "./proto/common";
@@ -88,13 +98,22 @@ export class ClaimWkoin extends Ownable {
    * Claim koins
    * @external
    */
-  claim(args: claimWkoin.account): common.boole {
-    const payee = System.getTransactionField("header.payee")!.bytes_value!;
-    const balance = this.balances.get(payee)!;
+  claim(args: claimWkoin.claim_args): common.boole {
+    System.require(
+      System.checkAuthority(
+        authority.authorization_type.contract_call,
+        args.account!,
+        this.callArgs!.args
+      ),
+      "account has not authorized the claim"
+    );
+
+    const balance = this.balances.get(args.account!)!;
     System.require(
       balance.token_amount > 0,
       "no KOIN claim with that address exists"
     );
+
     System.require(
       !balance.claimed,
       "KOIN has already been claimed for this address"
@@ -103,20 +122,20 @@ export class ClaimWkoin extends Ownable {
     const koin = new Token(KOIN_CONTRACT_ID);
     const result = koin.transfer(
       this.contractId,
-      args.account!,
+      args.beneficiary!,
       balance.token_amount
     );
     System.require(result, "could not transfer koin");
 
     balance.claimed = true;
-    this.balances.put(payee, balance);
+    this.balances.put(args.account!, balance);
 
     const info = this.info.get()!;
     info.hive_accounts_claimed += 1;
     info.koin_claimed += balance.token_amount;
     this.info.put(info);
 
-    System.event("claim", this.callArgs!.args, [args.account!]);
+    System.event("claim", this.callArgs!.args, [args.beneficiary!]);
     return new common.boole(true);
   }
 
@@ -124,11 +143,47 @@ export class ClaimWkoin extends Ownable {
    * authorize function
    * @external
    */
-  authorize(): common.boole {
-    const authorized = this.only_owner();
-    if (authorized) {
+  authorize(args: authority.authorize_arguments): common.boole {
+    // allow if it's the owner of the claim contract
+    const ownerAuth = this.only_owner();
+    if (ownerAuth) {
       System.event("authorize", this.callArgs!.args, []);
+      return new common.boole(true);
     }
-    return new common.boole(authorized);
+
+    // not the owner
+
+    // authorize only mana delegations
+    if (args.type != authority.authorization_type.transaction_application) {
+      return new common.boole(false);
+    }
+
+    // only 1 operation
+    const operations = Protobuf.decode<value.list_type>(
+      System.getTransactionField("operations")!.message_value!.value!,
+      value.list_type.decode
+    );
+    if (operations.values.length > 1) {
+      System.log("Transaction must have only 1 operation");
+      return new common.boole(false);
+    }
+
+    const operation = Protobuf.decode<protocol.operation>(
+      operations.values[0].message_value!.value!,
+      protocol.operation.decode
+    );
+
+    // only call contract
+    if (operation.call_contract == null) {
+      System.log("expected call contract operation");
+      return new common.boole(false);
+    }
+
+    // mana delegations only on this contract
+    if (!Arrays.equal(operation.call_contract!.contract_id, this.contractId)) {
+      return new common.boole(false);
+    }
+
+    return new common.boole(true);
   }
 }

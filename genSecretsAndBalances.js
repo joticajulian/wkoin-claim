@@ -4,7 +4,7 @@ const { Signer } = require("koilib");
 const snapshot = require("./snapshot.json");
 
 (async () => {
-  const snapshotSecrets = snapshot.balances.map(b => {
+  const snapshotSecrets = snapshot.balances.map((b) => {
     const signer = new Signer({
       privateKey: crypto.randomBytes(32),
     });

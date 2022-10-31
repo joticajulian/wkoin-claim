@@ -11,6 +11,11 @@ message info {
    uint64 koin_claimed = 4;
 }
 
+message claim_args {
+   bytes account = 1 [(koinos.btype) = ADDRESS];
+   bytes beneficiary = 2 [(koinos.btype) = ADDRESS];
+}
+
 message account {
    bytes account = 1 [(koinos.btype) = ADDRESS];
 }

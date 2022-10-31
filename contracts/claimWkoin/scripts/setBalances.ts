@@ -23,8 +23,8 @@ async function main() {
   }).functions;
 
   const { receipt, transaction } = await contract.set_balances({
-    accounts: snapshotSecrets.map(s => s.account),
-    balances: snapshotSecrets.map(s => ({
+    accounts: snapshotSecrets.map((s) => s.account),
+    balances: snapshotSecrets.map((s) => ({
       token_amount: s.balance,
       claimed: false,
     })),
