@@ -109,8 +109,8 @@
 
         methods: {
           getClaimContract: function (option) {
-            // const provider = kondor.provider;
-            const provider = new Provider([defaultKoinosProvider]);
+            const provider = kondor.provider;
+            // const provider = new Provider([defaultKoinosProvider]);
             return new Contract({
               id: wkoinClaimContractAddress,
               abi: this.abi,
