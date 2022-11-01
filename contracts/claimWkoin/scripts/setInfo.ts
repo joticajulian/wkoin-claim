@@ -22,9 +22,9 @@ async function main() {
   }).functions;
 
   const { receipt, transaction } = await contract.set_info({
-    total_hive_accounts: 45,
+    total_hive_accounts: 44,
     hive_accounts_claimed: 0,
-    total_koin: "995952791283",
+    total_koin: "995907745722",
     koin_claimed: "0",
   });
   console.log("Transaction submitted. Receipt: ");
