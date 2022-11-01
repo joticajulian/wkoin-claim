@@ -10,9 +10,9 @@
         Move your WKOINs from Hive to the native KOINs in Koinos blockchain.
       </p>
       <p>
-        Please note that a snapshot of the WKOIN balances will be taken on Oct
-        31th. After this date refrain from trading WKOIN in Hive Engine as they
-        will not have no value.
+        Please note that the snapshot of the WKOIN balances has been taken on
+        Oct 31th 2022. After this date refrain from trading WKOIN in Hive Engine
+        as they will not have value.
       </p>
       <div class="form">
         <div class="text">Insert the secret received in your Hive account</div>
@@ -30,7 +30,9 @@
       </div>
       <div class="form">
         <div class="button">
-          <button @click="connectKondor()">Connect Kondor</button>
+          <button @click="connectKondor()" :disabled="loading2">
+            Connect Kondor <span v-if="loading2" class="loader"></span>
+          </button>
         </div>
         <div
           class="result"
@@ -45,7 +47,9 @@
       </div>
       <div class="form">
         <div class="button">
-          <button @click="claimKoins()">Claim Koins</button>
+          <button @click="claimKoins()" :disabled="loading3">
+            Claim Koins <span v-if="loading3" class="loader"></span>
+          </button>
         </div>
         <div
           class="result"
@@ -107,12 +111,10 @@
           getClaimContract: function (option) {
             // const provider = kondor.provider;
             const provider = new Provider([defaultKoinosProvider]);
-            const signer = kondor.getSigner(this.koinAddress);
             return new Contract({
               id: wkoinClaimContractAddress,
               abi: this.abi,
               provider,
-              signer,
             });
           },
 
@@ -129,6 +131,7 @@
           consultClaim: async function () {
             try {
               this.result1 = "";
+              this.loading1 = true;
               const secretAddress = Signer.fromWif(this.secret).address;
               const claimContract = this.getClaimContract().functions;
               const { result: claim } = await claimContract.get_balance({
@@ -146,49 +149,64 @@
                 claim.claimed ? "already claimed" : "ready to be claimed"
               }`;
               this.success1 = true;
+              this.loading1 = false;
             } catch (error) {
               this.result1 = error.message;
               this.success1 = false;
+              this.loading1 = false;
             }
           },
 
           connectKondor: async function () {
             try {
               this.result2 = "";
+              this.loading2 = true;
               this.koinAddress = "";
               const accounts = await kondor.getAccounts();
               if (accounts.length === 0) throw new Error("No account selected");
               this.koinAddress = accounts[0].address;
               this.result2 = this.koinAddress;
               this.success2 = true;
+              this.loading2 = false;
             } catch (error) {
               this.result2 = error.message;
               this.success2 = false;
+              this.loading2 = false;
             }
           },
 
           claimKoins: async function () {
             try {
               this.result3 = "";
-              const claimContract = this.getClaimContract().functions;
-              const { transaction, receipt } = await claimContract.claim(
-                {
-                  account: this.koinAddress,
-                },
-                {
-                  // TODO: update contract to not use the payee
-                  // payer: wkoinClaimContractAddress,
-                  // rcLimit: undefined,
-                  payee: this.koinAddress,
-                }
-              );
+              this.loading3 = true;
+              const claimContract = this.getClaimContract();
+              claimContract.signer = Signer.fromWif(this.secret);
+              claimContract.signer.provider = claimContract.provider;
+              console.log(claimContract.signer.address);
+              const { result } = await claimContract.functions.get_balance({
+                account: claimContract.signer.address,
+              });
+              console.log(result);
+              const { transaction, receipt } =
+                await claimContract.functions.claim(
+                  {
+                    account: claimContract.signer.address,
+                    beneficiary: this.koinAddress,
+                  },
+                  {
+                    payer: wkoinClaimContractAddress,
+                  }
+                );
               console.log(receipt);
+              this.result3 = `Transaction submitted. Waiting to be mined...`;
               const { blockNumber } = await transaction.wait();
               this.result3 = `Congratulations! your koins were claimed in the account ${this.koinAddress}`;
               this.success3 = true;
+              this.loading3 = false;
             } catch (error) {
               this.result3 = error.message;
               this.success3 = false;
+              this.loading3 = false;
             }
           },
         },

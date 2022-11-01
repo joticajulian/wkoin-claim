@@ -28,6 +28,10 @@ button {
   margin: 3px 0px 8px 0px;
 }
 
+button:disabled {
+  background: #99abc7;
+}
+
 .form {
   margin: 40px 0px;
 }
@@ -38,4 +42,25 @@ button {
 
 .fail {
   color: red;
+}
+
+.loader {
+  margin-left: 7px;
+  width: 12px;
+  height: 12px;
+  border: 2px solid #fff;
+  border-bottom-color: #38527b;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

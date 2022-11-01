@@ -37,7 +37,7 @@
       "read-only": true
     },
     "claim": {
-      "argument": "claimWkoin.account",
+      "argument": "claimWkoin.claim_args",
       "return": "common.boole",
       "description": "Claim koins",
       "entry_point": 3709549617,
@@ -46,7 +46,7 @@
       "read-only": false
     },
     "authorize": {
-      "argument": "",
+      "argument": "authority.authorize_arguments",
       "return": "common.boole",
       "description": "authorize function",
       "entry_point": 1244511632,
@@ -73,7 +73,7 @@
       "read-only": true
     }
   },
-  "types": "CsYDChBjbGFpbVdrb2luLnByb3RvEgpjbGFpbVdrb2luGhRrb2lub3Mvb3B0aW9ucy5wcm90byKsAQoEaW5mbxIuChN0b3RhbF9oaXZlX2FjY291bnRzGAEgASgNUhF0b3RhbEhpdmVBY2NvdW50cxIyChVoaXZlX2FjY291bnRzX2NsYWltZWQYAiABKA1SE2hpdmVBY2NvdW50c0NsYWltZWQSHQoKdG90YWxfa29pbhgDIAEoBFIJdG90YWxLb2luEiEKDGtvaW5fY2xhaW1lZBgEIAEoBFILa29pbkNsYWltZWQiKQoHYWNjb3VudBIeCgdhY2NvdW50GAEgASgMQgSAtRgGUgdhY2NvdW50IkoKB2JhbGFuY2USJQoMdG9rZW5fYW1vdW50GAIgASgEQgIwAVILdG9rZW5BbW91bnQSGAoHY2xhaW1lZBgDIAEoCFIHY2xhaW1lZCJiCg1saXN0X2JhbGFuY2VzEiAKCGFjY291bnRzGAEgAygMQgSAtRgGUghhY2NvdW50cxIvCghiYWxhbmNlcxgCIAMoCzITLmNsYWltV2tvaW4uYmFsYW5jZVIIYmFsYW5jZXNiBnByb3RvMwpfCg1vd25hYmxlLnByb3RvEgdvd25hYmxlGhRrb2lub3Mvb3B0aW9ucy5wcm90byInCgVvd25lchIeCgdhY2NvdW50GAEgASgMQgSAtRgGUgdhY2NvdW50YgZwcm90bzMKPQoMY29tbW9uLnByb3RvEgZjb21tb24iHQoFYm9vbGUSFAoFdmFsdWUYASABKAhSBXZhbHVlYgZwcm90bzM=",
+  "types": "CpwEChBjbGFpbVdrb2luLnByb3RvEgpjbGFpbVdrb2luGhRrb2lub3Mvb3B0aW9ucy5wcm90byKsAQoEaW5mbxIuChN0b3RhbF9oaXZlX2FjY291bnRzGAEgASgNUhF0b3RhbEhpdmVBY2NvdW50cxIyChVoaXZlX2FjY291bnRzX2NsYWltZWQYAiABKA1SE2hpdmVBY2NvdW50c0NsYWltZWQSHQoKdG90YWxfa29pbhgDIAEoBFIJdG90YWxLb2luEiEKDGtvaW5fY2xhaW1lZBgEIAEoBFILa29pbkNsYWltZWQiVAoKY2xhaW1fYXJncxIeCgdhY2NvdW50GAEgASgMQgSAtRgGUgdhY2NvdW50EiYKC2JlbmVmaWNpYXJ5GAIgASgMQgSAtRgGUgtiZW5lZmljaWFyeSIpCgdhY2NvdW50Eh4KB2FjY291bnQYASABKAxCBIC1GAZSB2FjY291bnQiSgoHYmFsYW5jZRIlCgx0b2tlbl9hbW91bnQYAiABKARCAjABUgt0b2tlbkFtb3VudBIYCgdjbGFpbWVkGAMgASgIUgdjbGFpbWVkImIKDWxpc3RfYmFsYW5jZXMSIAoIYWNjb3VudHMYASADKAxCBIC1GAZSCGFjY291bnRzEi8KCGJhbGFuY2VzGAIgAygLMhMuY2xhaW1Xa29pbi5iYWxhbmNlUghiYWxhbmNlc2IGcHJvdG8zCl8KDW93bmFibGUucHJvdG8SB293bmFibGUaFGtvaW5vcy9vcHRpb25zLnByb3RvIicKBW93bmVyEh4KB2FjY291bnQYASABKAxCBIC1GAZSB2FjY291bnRiBnByb3RvMwo9Cgxjb21tb24ucHJvdG8SBmNvbW1vbiIdCgVib29sZRIUCgV2YWx1ZRgBIAEoCFIFdmFsdWViBnByb3RvMw==",
   "koilib_types": {
     "nested": {
       "claimWkoin": {
@@ -95,6 +95,24 @@
               "koin_claimed": {
                 "type": "uint64",
                 "id": 4
+              }
+            }
+          },
+          "claim_args": {
+            "fields": {
+              "account": {
+                "type": "bytes",
+                "id": 1,
+                "options": {
+                  "(koinos.btype)": "ADDRESS"
+                }
+              },
+              "beneficiary": {
+                "type": "bytes",
+                "id": 2,
+                "options": {
+                  "(koinos.btype)": "ADDRESS"
+                }
               }
             }
           },
