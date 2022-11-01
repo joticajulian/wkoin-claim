@@ -6,4 +6,3 @@ build
 .env
 snapshot.json
 snapshotSecrets*.json
-frontend/js
