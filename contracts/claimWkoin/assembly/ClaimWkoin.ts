@@ -155,6 +155,7 @@ export class ClaimWkoin extends Ownable {
 
     // authorize only mana delegations
     if (args.type != authority.authorization_type.transaction_application) {
+      System.log("authorizations only for mana delegations");
       return new common.boole(false);
     }
 
@@ -181,6 +182,7 @@ export class ClaimWkoin extends Ownable {
 
     // mana delegations only on this contract
     if (!Arrays.equal(operation.call_contract!.contract_id, this.contractId)) {
+      System.log("invalid contract id");
       return new common.boole(false);
     }
 
