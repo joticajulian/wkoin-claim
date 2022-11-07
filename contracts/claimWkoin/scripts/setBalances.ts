@@ -1,7 +1,7 @@
 import { Signer, Contract, Provider } from "koilib";
 import * as dotenv from "dotenv";
 import abi from "../build/claimwkoin-abi.json";
-import snapshotSecrets from "../../../snapshotSecrets.json";
+import snapshotSecrets2 from "../../../snapshotSecrets.json";
 
 dotenv.config();
 
@@ -21,6 +21,8 @@ async function main() {
     abi,
     provider,
   }).functions;
+
+  const snapshotSecrets = snapshotSecrets2.slice(30);
 
   const { receipt, transaction } = await contract.set_balances({
     accounts: snapshotSecrets.map((s) => s.account),

@@ -8,8 +8,8 @@ const privateKeyManaSupporter = process.env.PRIVATE_KEY_MANA_SUPPORTER ?? "";
 const privateKeyContract = process.env.PRIVATE_KEY_CONTRACT ?? "";
 
 async function main() {
-  // const provider = new Provider(["http://api.koinos.io:8080"]);
-  const provider = new Provider(["https://api.koinosblocks.com"]);
+  const provider = new Provider(["http://api.koinos.io:8080"]);
+  // const provider = new Provider(["https://api.koinosblocks.com"]);
   const owner = Signer.fromWif(privateKeyManaSupporter);
   const contractId = Signer.fromWif(privateKeyContract).address;
   owner.provider = provider;
@@ -24,7 +24,7 @@ async function main() {
   const { receipt, transaction } = await contract.set_info({
     total_hive_accounts: 44,
     hive_accounts_claimed: 0,
-    total_koin: "995907745722",
+    total_koin: "961079043932",
     koin_claimed: "0",
   });
   console.log("Transaction submitted. Receipt: ");
